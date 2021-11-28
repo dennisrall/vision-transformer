@@ -1,0 +1,14 @@
+.dvc/cache
+.dvc/tmp
+Dockerfile
+gpu.Dockerfile
+.venv
+bibliography
+notebooks
+out
+summary
+tex
+Links.md
+Overview.md
+README.md
+todo.md

@@ -1,0 +1,70 @@
+image: docker:19.03.14
+
+stages:
+  - build
+  - test
+  - train
+
+python-environment-cpu:
+  stage: build
+  variables:
+    TARGET: python-environment
+  script:
+    - DOCKER_BUILDKIT=1 BUILDKIT_PROGRESS=plain docker build
+        --target $TARGET -t $CI_REGISTRY_IMAGE/$TARGET:$CI_COMMIT_SHORT_SHA .
+  after_script:
+    - docker rmi $CI_REGISTRY_IMAGE/$TARGET:$CI_COMMIT_SHORT_SHA
+
+python-environment-gpu:
+  stage: build
+  only:
+    variables:
+      - $ENABLE_GPU == "True"
+  variables:
+    TARGET: python-environment
+  script:
+    - DOCKER_BUILDKIT=1 BUILDKIT_PROGRESS=plain docker build -f gpu.Dockerfile
+        --target $TARGET -t $CI_REGISTRY_IMAGE/$TARGET-gpu:$CI_COMMIT_SHORT_SHA .
+  after_script:
+    - docker rmi $CI_REGISTRY_IMAGE/$TARGET-gpu:$CI_COMMIT_SHORT_SHA
+
+flake8:
+  stage: test
+  variables:
+    TARGET: flake8
+  script:
+    - DOCKER_BUILDKIT=1 BUILDKIT_PROGRESS=plain docker build
+        --target $TARGET -t $CI_REGISTRY_IMAGE/$TARGET:$CI_COMMIT_SHORT_SHA .
+  after_script:
+    - docker rmi $CI_REGISTRY_IMAGE/$TARGET:$CI_COMMIT_SHORT_SHA
+
+pytest:
+  stage: test
+  variables:
+    TARGET: pytest
+  script:
+    - DOCKER_BUILDKIT=1 BUILDKIT_PROGRESS=plain docker build
+        --target $TARGET -t $CI_REGISTRY_IMAGE/$TARGET:$CI_COMMIT_SHORT_SHA .
+  after_script:
+    - docker rmi $CI_REGISTRY_IMAGE/$TARGET:$CI_COMMIT_SHORT_SHA
+
+dvc-repro:
+  stage: train
+  variables:
+    TARGET: dvc-repro
+  before_script:
+    - /bin/sh create_minio_credentials.sh
+  script:
+    - if [ "$ENABLE_GPU" = True ]; then GPU_BUILD_FLAG="-f gpu.Dockerfile"; fi
+    - DOCKER_BUILDKIT=1 BUILDKIT_PROGRESS=plain docker build $GPU_BUILD_FLAG
+        --target $TARGET
+        -t $CI_REGISTRY_IMAGE/$TARGET:$CI_COMMIT_SHORT_SHA .
+    - if [ "$ENABLE_GPU" = True ]; then GPU_RUN_FLAG="--gpus all"; fi
+    - docker run $GPU_RUN_FLAG --rm
+        -e CML_TOKEN=$CML_TOKEN
+        -e CI_SERVER_HOST=$CI_SERVER_HOST
+        -e CI_PROJECT_PATH=$CI_PROJECT_PATH
+        -e CI_COMMIT_REF_NAME=$CI_COMMIT_REF_NAME
+        $CI_REGISTRY_IMAGE/$TARGET:$CI_COMMIT_SHORT_SHA
+  after_script:
+    - docker rmi $CI_REGISTRY_IMAGE/$TARGET:$CI_COMMIT_SHORT_SHA

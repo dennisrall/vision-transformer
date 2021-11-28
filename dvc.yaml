@@ -1,0 +1,139 @@
+stages:
+  train-naive-transformer:
+    cmd: python src/train_naive_transformer.py
+    deps:
+    - src/train_naive_transformer.py
+    params:
+    - model.naive.epochs
+    - model.naive.batch_size
+    - model.naive.embed_dim
+    - model.naive.num_heads
+    - model.naive.num_transformer_blocks
+    - model.naive.ff_dim
+    outs:
+    - out/model/naive
+    - out/log/naive
+  train-patch-transformer:
+    cmd: python src/train_patch_transformer.py
+    deps:
+    - src/train_patch_transformer.py
+    - src/train_util.py
+    params:
+    - model.patch.epochs
+    - model.patch.batch_size
+    - model.patch.embed_dim
+    - model.patch.num_heads
+    - model.patch.num_transformer_blocks
+    - model.patch.ff_dim
+    outs:
+    - out/model/patch
+    - out/log/patch
+  evaluate:
+    cmd: python src/evaluate.py
+    deps:
+    - out/model
+    - src/evaluate.py
+    - src/evaluate/experiment1.py
+    - src/evaluate/experiment2.py
+    - src/evaluate/experiment3.py
+    - src/evaluate/experiment4.py
+    - src/evaluate/draw_patches_in_example.py
+    - src/evaluate/attention_visualization.py
+    outs:
+    - out/plots
+    params:
+      - evaluate.attention_visualization.image_num
+  train_cnn_for_mnist:
+    cmd: python src/train_cnn_for_mnist.py
+    deps:
+    - src/train_cnn_for_mnist.py
+    params:
+      - model.cnn.epochs
+      - model.cnn.batch_size
+      - model.cnn.mlp_dim
+      - model.cnn.filters
+      - model.cnn.kernel_size
+    outs:
+    - out/model/cnn
+    - out/log/cnn
+  train_for_experiment1:
+    cmd: python src/train_for_experiment1.py
+    deps:
+      - src/train_for_experiment1.py
+      - src/train_util.py
+    params:
+      - model.experiment1.epochs
+      - model.experiment1.batch_size
+      - model.experiment1.embed_dim
+      - model.experiment1.num_heads
+      - model.experiment1.ff_dim
+    outs:
+      - out/model/experiment1
+      - out/log/experiment1
+  train_for_experiment2:
+    cmd: python src/train_for_experiment2.py
+    deps:
+      - src/train_for_experiment2.py
+      - src/train_util.py
+    params:
+      - model.experiment2.epochs
+      - model.experiment2.batch_size
+      - model.experiment2.patch_size
+      - model.experiment2.cnn.20k.mlp_dim
+      - model.experiment2.cnn.20k.filters
+      - model.experiment2.cnn.20k.kernel_size
+      - model.experiment2.cnn.40k.mlp_dim
+      - model.experiment2.cnn.40k.filters
+      - model.experiment2.cnn.40k.kernel_size
+      - model.experiment2.cnn.90k.mlp_dim
+      - model.experiment2.cnn.90k.filters
+      - model.experiment2.cnn.90k.kernel_size
+      - model.experiment2.cnn.200k.mlp_dim
+      - model.experiment2.cnn.200k.filters
+      - model.experiment2.cnn.200k.kernel_size
+      - model.experiment2.patch.20k.embed_dim
+      - model.experiment2.patch.20k.num_heads
+      - model.experiment2.patch.20k.num_transformer_blocks
+      - model.experiment2.patch.20k.ff_dim
+      - model.experiment2.patch.40k.embed_dim
+      - model.experiment2.patch.40k.num_heads
+      - model.experiment2.patch.40k.num_transformer_blocks
+      - model.experiment2.patch.40k.ff_dim
+      - model.experiment2.patch.90k.embed_dim
+      - model.experiment2.patch.90k.num_heads
+      - model.experiment2.patch.90k.num_transformer_blocks
+      - model.experiment2.patch.90k.ff_dim
+      - model.experiment2.patch.200k.embed_dim
+      - model.experiment2.patch.200k.num_heads
+      - model.experiment2.patch.200k.num_transformer_blocks
+      - model.experiment2.patch.200k.ff_dim
+    outs:
+      - out/model/experiment2
+      - out/log/experiment2
+  train_for_experiment3:
+    cmd: python src/train_for_experiment3.py
+    deps:
+      - src/train_for_experiment3.py
+      - src/train_util.py
+    params:
+      - model.experiment3.epochs
+      - model.experiment3.batch_size
+      - model.experiment3.embed_dim
+      - model.experiment3.num_heads
+      - model.experiment3.ff_dim
+    outs:
+      - out/model/experiment3
+      - out/log/experiment3
+  train_for_experiment4:
+    cmd: python src/train_for_experiment4.py
+    deps:
+      - src/train_for_experiment4.py
+      - src/train_util.py
+    params:
+      - model.experiment4.epochs
+      - model.experiment4.batch_size
+      - model.experiment4.learning_rate
+      - model.experiment4.vit_types
+    outs:
+      - out/model/experiment4
+      - out/log/experiment4

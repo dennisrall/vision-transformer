@@ -1,0 +1,255 @@
+schema: '2.0'
+stages:
+  train-naive-transformer:
+    cmd: python src/train_naive_transformer.py
+    deps:
+    - path: src/train_naive_transformer.py
+      md5: 8fa69a2a64dcd67b7bcc698483208d38
+      size: 1278
+    params:
+      params.yaml:
+        model.naive.batch_size: 8
+        model.naive.embed_dim: 4
+        model.naive.epochs: 1
+        model.naive.ff_dim: 32
+        model.naive.num_heads: 4
+        model.naive.num_transformer_blocks: 16
+    outs:
+    - path: out/log/naive
+      md5: b42b1a9fd5a5f42aba940c4bbffb186d.dir
+      size: 346
+      nfiles: 2
+    - path: out/model/naive
+      md5: b71ba5dcbf19fac52f60e4d1f86cfeae.dir
+      size: 164806
+      nfiles: 3
+  train-patch-transformer:
+    cmd: python src/train_patch_transformer.py
+    deps:
+    - path: src/train_patch_transformer.py
+      md5: ce8f69a1082a787b3a6573566272bae7
+      size: 1370
+    - path: src/train_util.py
+      md5: e948add7c098f53eaa080b172bbfd11e
+      size: 3542
+    params:
+      params.yaml:
+        model.patch.batch_size: 8
+        model.patch.embed_dim: 4
+        model.patch.epochs: 1
+        model.patch.ff_dim: 128
+        model.patch.num_heads: 4
+        model.patch.num_transformer_blocks: 64
+    outs:
+    - path: out/log/patch
+      md5: 170bf65d4f8df0e1b6acb02ce1a4ced1.dir
+      size: 346
+      nfiles: 2
+    - path: out/model/patch
+      md5: b7ed5e44516c280f46eeebef8ab27e19.dir
+      size: 826705
+      nfiles: 3
+  evaluate:
+    cmd: python src/evaluate.py
+    deps:
+    - path: out/model
+      md5: 40affbe44c8c34259ef3eeb0b88af8b1.dir
+      size: 3522372541
+      nfiles: 150
+    - path: src/evaluate.py
+      md5: ddd00d065d2385d3eafc3a00012fc447
+      size: 625
+    - path: src/evaluate/attention_visualization.py
+      md5: ffd4a16fc1857631758c33034948cb1f
+      size: 3057
+    - path: src/evaluate/draw_patches_in_example.py
+      md5: 1c9947ed6ac98d172f9570ed399b80b6
+      size: 2266
+    - path: src/evaluate/experiment1.py
+      md5: 60c5b040a501edfd7a6bc1d350adfc7e
+      size: 6057
+    - path: src/evaluate/experiment2.py
+      md5: 3d6f6f9d5d9866c50864d607225fc8e2
+      size: 3088
+    - path: src/evaluate/experiment3.py
+      md5: 091d7dab56b20a80599d5c6f9d114bd8
+      size: 2447
+    - path: src/evaluate/experiment4.py
+      md5: 18d3914c207eb460962575f2a479eea5
+      size: 1435
+    params:
+      params.yaml:
+        evaluate.attention_visualization.image_num: 32
+    outs:
+    - path: out/plots
+      md5: 1c66bf4a8b2eb99b628e482be40421e4.dir
+      size: 261014
+      nfiles: 28
+  train_cnn_for_mnist:
+    cmd: python src/train_cnn_for_mnist.py
+    deps:
+    - path: src/train_cnn_for_mnist.py
+      md5: a820ab85054662d5413f8852f4b1f888
+      size: 1095
+    params:
+      params.yaml:
+        model.cnn.batch_size: 32
+        model.cnn.epochs: 1
+        model.cnn.filters:
+        - 16
+        - 32
+        - 64
+        model.cnn.kernel_size: 3
+        model.cnn.mlp_dim: 128
+    outs:
+    - path: out/log/cnn
+      md5: 3b8e4f36f69e2ded6f349435c408bb22.dir
+      size: 346
+      nfiles: 2
+    - path: out/model/cnn
+      md5: 7c61a2dfaea9548018845d3d37330b71.dir
+      size: 396281
+      nfiles: 3
+  train_for_experiment1:
+    cmd: python src/train_for_experiment1.py
+    deps:
+    - path: src/train_for_experiment1.py
+      md5: 7111e1c0ec243c34a940ad394bb2eff9
+      size: 2142
+    - path: src/train_util.py
+      md5: e948add7c098f53eaa080b172bbfd11e
+      size: 3542
+    params:
+      params.yaml:
+        model.experiment1.batch_size: 8
+        model.experiment1.embed_dim: 4
+        model.experiment1.epochs: 5
+        model.experiment1.ff_dim: 128
+        model.experiment1.num_heads: 4
+    outs:
+    - path: out/log/experiment1
+      md5: 378f694034034d667379160e4ea59b08.dir
+      size: 21150
+      nfiles: 30
+    - path: out/model/experiment1
+      md5: 2e087742f2774261eb381a235de9a22f.dir
+      size: 3134108
+      nfiles: 45
+  train_for_experiment2:
+    cmd: python src/train_for_experiment2.py
+    deps:
+    - path: src/train_for_experiment2.py
+      md5: ed133a4342f9228a45db9122ff12df9b
+      size: 2065
+    - path: src/train_util.py
+      md5: e948add7c098f53eaa080b172bbfd11e
+      size: 3542
+    params:
+      params.yaml:
+        model.experiment2.batch_size: 8
+        model.experiment2.cnn.200k.filters:
+        - 16
+        - 32
+        - 64
+        - 256
+        model.experiment2.cnn.200k.kernel_size: 3
+        model.experiment2.cnn.200k.mlp_dim: 128
+        model.experiment2.cnn.20k.filters:
+        - 4
+        - 8
+        - 16
+        - 64
+        model.experiment2.cnn.20k.kernel_size: 3
+        model.experiment2.cnn.20k.mlp_dim: 128
+        model.experiment2.cnn.40k.filters:
+        - 8
+        - 16
+        - 32
+        model.experiment2.cnn.40k.kernel_size: 3
+        model.experiment2.cnn.40k.mlp_dim: 128
+        model.experiment2.cnn.90k.filters:
+        - 16
+        - 32
+        - 64
+        model.experiment2.cnn.90k.kernel_size: 3
+        model.experiment2.cnn.90k.mlp_dim: 128
+        model.experiment2.epochs: 10
+        model.experiment2.patch.200k.embed_dim: 4
+        model.experiment2.patch.200k.ff_dim: 128
+        model.experiment2.patch.200k.num_heads: 4
+        model.experiment2.patch.200k.num_transformer_blocks: 128
+        model.experiment2.patch.20k.embed_dim: 4
+        model.experiment2.patch.20k.ff_dim: 128
+        model.experiment2.patch.20k.num_heads: 4
+        model.experiment2.patch.20k.num_transformer_blocks: 16
+        model.experiment2.patch.40k.embed_dim: 4
+        model.experiment2.patch.40k.ff_dim: 128
+        model.experiment2.patch.40k.num_heads: 4
+        model.experiment2.patch.40k.num_transformer_blocks: 32
+        model.experiment2.patch.90k.embed_dim: 4
+        model.experiment2.patch.90k.ff_dim: 128
+        model.experiment2.patch.90k.num_heads: 4
+        model.experiment2.patch.90k.num_transformer_blocks: 64
+        model.experiment2.patch_size: 7
+    outs:
+    - path: out/log/experiment2
+      md5: d14f9d899fd7f952151fe73ec7796ff8.dir
+      size: 21920
+      nfiles: 16
+    - path: out/model/experiment2
+      md5: bca4ab714d5f2b10dadf836aa5b6b03e.dir
+      size: 4617152
+      nfiles: 24
+  train_for_experiment3:
+    cmd: python src/train_for_experiment3.py
+    deps:
+    - path: src/train_for_experiment3.py
+      md5: 818d9d41385c980782838900a4b378f3
+      size: 1711
+    - path: src/train_util.py
+      md5: e948add7c098f53eaa080b172bbfd11e
+      size: 3542
+    params:
+      params.yaml:
+        model.experiment3.batch_size: 8
+        model.experiment3.embed_dim: 4
+        model.experiment3.epochs: 10
+        model.experiment3.ff_dim: 128
+        model.experiment3.num_heads: 4
+    outs:
+    - path: out/log/experiment3
+      md5: f7feb1c29ade2fca80e9a133dc105d52.dir
+      size: 54800
+      nfiles: 40
+    - path: out/model/experiment3
+      md5: 3ba9c530df008a04bd8472b410fab810.dir
+      size: 386235514
+      nfiles: 60
+  train_for_experiment4:
+    cmd: python src/train_for_experiment4.py
+    deps:
+    - path: src/train_for_experiment4.py
+      md5: 0571b89fbb008cd3ab69ac68cb1e2d1d
+      size: 1499
+    - path: src/train_util.py
+      md5: e948add7c098f53eaa080b172bbfd11e
+      size: 3542
+    params:
+      params.yaml:
+        model.experiment4.batch_size: 8
+        model.experiment4.epochs: 2
+        model.experiment4.learning_rate: 0.0001
+        model.experiment4.vit_types:
+        - vit_b16
+        - vit_b32
+        - vit_l16
+        - vit_l32
+    outs:
+    - path: out/log/experiment4
+      md5: 23ee5358125aa6829de0f7459ffd3f7d.dir
+      size: 2448
+      nfiles: 8
+    - path: out/model/experiment4
+      md5: b5059da7eb51b8d65787bd659ac1ce29.dir
+      size: 3126997975
+      nfiles: 12

@@ -1,0 +1,27 @@
+[tool.poetry]
+name = "vision-transformer"
+version = "0.1.0"
+description = "master thesis Dennis Rall"
+authors = ["Dennis Rall"]
+
+[tool.poetry.dependencies]
+python = "~3.7.9"
+tensorflow = "2.4.2"
+tensorflow-datasets = "^4.3.0"
+boto3 = "^1.16.37"
+dvc = "^2.5.4"
+PyYAML = "^5.4.1"
+s3fs = "^2021.7.0"
+image-slicer = "^2.1.1"
+matplotlib = "^3.4.3"
+vit-keras = "^0.1.0"
+tensorflow-addons = "^0.14.0"
+opencv-python = "<=4.4"
+
+[tool.poetry.dev-dependencies]
+flake8 = "^3.8.4"
+pytest = "^6.2.1"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
